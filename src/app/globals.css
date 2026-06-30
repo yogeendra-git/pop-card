@@ -1,0 +1,192 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ===== POP Card design tokens — Light ===== */
+    --background: 0 0% 100%;          /* #FFFFFF */
+    --surface: 210 40% 98%;           /* #F8FAFC */
+    --foreground: 222 47% 11%;        /* #0F172A */
+    --border: 214.3 31.8% 91.4%;      /* #E2E8F0 */
+    --input: 214.3 31.8% 91.4%;
+    --ring: 243.4 75.4% 58.6%;        /* matches primary */
+
+    --primary: 243.4 75.4% 58.6%;     /* #4F46E5 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 262 83% 58%;         /* decorative violet, paired with primary in gradients */
+    --secondary-foreground: 0 0% 100%;
+
+    --success: 160.1 84.1% 39.4%;     /* #10B981 */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 26 83% 14%;
+
+    --info: 217 91% 60%;
+    --info-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --radius: 0.75rem;
+    --font-sans: var(--font-inter);
+    /* JetBrains Mono (migrated from popcard-platform's brand type system) with a
+       system-mono fallback chain so labels still render before the webfont loads. */
+    --font-mono: var(--font-mono-brand), ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .dark {
+    /* ===== POP Card design tokens — Dark ===== */
+    --background: 222.2 84% 4.9%;     /* #020617 */
+    --surface: 222.2 47.4% 11.2%;     /* #0F172A */
+    --foreground: 210 40% 98%;        /* #F8FAFC */
+    --border: 217.2 32.6% 17.5%;      /* #1E293B */
+    --input: 217.2 32.6% 17.5%;
+    --ring: 238.7 83.5% 66.7%;        /* matches dark primary */
+
+    --primary: 238.7 83.5% 66.7%;     /* #6366F1 */
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 262 83% 68%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --success: 160.1 84.1% 39.4%;     /* #10B981 */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 55%;
+    --warning-foreground: 26 83% 10%;
+
+    --info: 217 91% 65%;
+    --info-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 47.4% 9%;
+    --popover-foreground: 210 40% 98%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Used sparingly — premium hero/feature moments only, not as a default card style */
+  .glass {
+    @apply bg-surface/70 backdrop-blur-md border border-border/60 shadow-elevated;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* ===================================================================
+   * Brand surface system — migrated from popcard-platform's index.css.
+   *
+   * Unlike the original (which hand-forked every class into a `-dark` /
+   * `-light` pair driven by an `isDark` prop), these are written once
+   * against the semantic tokens above. They repaint automatically when
+   * `.dark` is toggled by next-themes — no JS branching, no prop drilling.
+   * =================================================================== */
+
+  /* Sticky nav surface — frosted glass over content as the page scrolls */
+  .glass-nav {
+    background: hsl(var(--background) / 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid hsl(var(--border) / 0.6);
+  }
+
+  /* Elevated glass card — feature tiles, testimonial panel, floating badges */
+  .glass-card {
+    background: hsl(var(--card) / 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid hsl(var(--border) / 0.6);
+  }
+
+  /* Faint dot/line grid backdrop used behind hero & auth panels */
+  .bg-grid-glow {
+    background-size: 40px 40px;
+    background-image:
+      linear-gradient(to right, hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.04) 1px, transparent 1px);
+  }
+
+  /* Gradient headline text — foreground fading into brand primary */
+  .text-gradient-brand {
+    background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--primary)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Gradient headline text — primary into secondary (indigo → violet) */
+  .text-gradient-primary {
+    background: linear-gradient(90deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Custom scrollbar — migrated from popcard-platform */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--primary) / 0.25);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+}
+
+html {
+  scroll-behavior: smooth;
+}
