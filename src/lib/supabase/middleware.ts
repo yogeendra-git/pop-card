@@ -5,27 +5,28 @@ import { NextResponse, type NextRequest } from "next/server"
  * Refreshes the Supabase auth session on every request and redirects
  * unauthenticated users away from /dashboard/*. Called from the root
  * src/middleware.ts.
+ *
+ * Uses the getAll/setAll cookie API required by @supabase/ssr >=0.5.x.
+ * The old get/set/remove pattern is deprecated and causes a runtime crash
+ * on Vercel (MIDDLEWARE_INVOCATION_FAILED) with this version.
  */
 export async function updateSession(request: NextRequest) {
-  let response = NextResponse.next({ request: { headers: request.headers } })
+  let response = NextResponse.next({ request })
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value
+        getAll() {
+          return request.cookies.getAll()
         },
-        set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({ name, value, ...options })
-          response = NextResponse.next({ request: { headers: request.headers } })
-          response.cookies.set({ name, value, ...options })
-        },
-        remove(name: string, options: CookieOptions) {
-          request.cookies.set({ name, value: "", ...options })
-          response = NextResponse.next({ request: { headers: request.headers } })
-          response.cookies.set({ name, value: "", ...options })
+        setAll(cookiesToSet: { name: string; value: string; options: CookieOptions }[]) {
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          response = NextResponse.next({ request })
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          )
         },
       },
     }
